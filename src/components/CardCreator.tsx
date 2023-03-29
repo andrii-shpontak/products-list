@@ -41,20 +41,6 @@ const HightLight = (props: any) => {
   });
 };
 
-const dotes = (props: string[]) => {
-  props.map((e) => {
-    <span
-      key={uuidv4()}
-      style={{
-        width: '10px',
-        height: '10px',
-        backgroundColor: '#777777',
-        borderRadius: '100%',
-      }}
-    />;
-  });
-};
-
 const CardCreator: FC<IData> = (props) => {
   const searchType: string = useSelector((state: IState) => state?.searchType);
   const dispatch = useDispatch();
@@ -81,7 +67,11 @@ const CardCreator: FC<IData> = (props) => {
 
   return (
     <Box
-      sx={{ margin: '45px auto 0 auto', maxWidth: '350px', ':hover': { transform: 'scale(1.1)' } }}>
+      sx={{
+        margin: '45px auto 0 auto',
+        maxWidth: '350px',
+        ':hover': { transform: 'scale(1.05)' },
+      }}>
       <Card>
         <CardContent sx={{ padding: '25px 25px 0 25px' }}>
           <Stack sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -100,14 +90,16 @@ const CardCreator: FC<IData> = (props) => {
             component="div">
             {searchType === 'title' ? light(title) : title}
           </Typography>
-          <Typography
-            sx={{ marginTop: '24px', fontSize: '24px', lineHeight: '30px', fontWeight: 400 }}
-            gutterBottom
-            variant="body1"
-            component="div">
-            {description}
-          </Typography>
-          <Typography variant="h6">Price: {price}$</Typography>
+          {description && (
+            <Typography
+              sx={{ marginTop: '24px', fontSize: '24px', lineHeight: '30px', fontWeight: 400 }}
+              gutterBottom
+              variant="body1"
+              component="div">
+              {description}
+            </Typography>
+          )}
+          {price && <Typography variant="h6">Price: {price}$</Typography>}
         </CardContent>
         <CardMedia
           sx={{ objectFit: 'contain' }}
@@ -116,6 +108,7 @@ const CardCreator: FC<IData> = (props) => {
           image={images[imageNum]}
           alt={title}
         />
+
         <Stack
           sx={{
             padding: '0 15px',
@@ -153,12 +146,15 @@ const CardCreator: FC<IData> = (props) => {
             onClick={() => changImage(1)}
           />
         </Stack>
+
         <CardContent sx={{ padding: '25px 25px 0 25px' }}>
           <Typography variant="h6">Rating: {rating}</Typography>
-          <Typography variant="h6">Stock: {stock}</Typography>
-          <Typography variant="h6">
-            Category: {searchType === 'category' ? light(category) : category}
-          </Typography>
+          {stock && <Typography variant="h6">Stock: {stock}</Typography>}
+          {category && (
+            <Typography variant="h6">
+              Category: {searchType === 'category' ? light(category) : category}
+            </Typography>
+          )}
         </CardContent>
         <CardActions sx={{ padding: '25px' }}>
           <Link

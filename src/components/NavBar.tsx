@@ -1,14 +1,6 @@
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Stack,
-  Container,
-  Button,
-} from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, IconButton, Stack, Container } from '@mui/material';
 import { Menu, Facebook, Instagram, Twitter } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
   return (
@@ -35,9 +27,15 @@ const NavBar = () => {
                 justifyContent: 'space-between',
                 width: '100px',
               }}>
-              <Facebook />
-              <Instagram />
-              <Twitter />
+              <Link style={{ textDecoration: 'none', color: '#fff' }} target={'_blank'} to="#">
+                <Facebook />
+              </Link>
+              <Link style={{ textDecoration: 'none', color: '#fff' }} target={'_blank'} to="#">
+                <Instagram />
+              </Link>
+              <Link style={{ textDecoration: 'none', color: '#fff' }} target={'_blank'} to="#">
+                <Twitter />
+              </Link>
             </Stack>
           </Container>
         </Toolbar>

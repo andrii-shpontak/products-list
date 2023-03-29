@@ -1,34 +1,27 @@
 import axios from 'axios';
 import { Suspense, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import NavBar from './components/NavBar';
 import MainPage from './pages/MainPage';
 import Spinner from './components/Spinner';
 import { setLoading, setError, getProductsData, setErrorText } from './store/productsSlice';
-import { IState } from './types';
+import AddForm from './pages/AddForm';
 
 function App() {
   const dispatch = useDispatch();
-  const limit: number = useSelector((state: IState) => state?.limit);
-  const byCategory: string = useSelector((state: IState) => state?.byCategory);
 
   const getData = async () => {
     dispatch(setLoading(true));
     dispatch(setError(false));
 
     try {
-      const { data } = await axios.get(
-        byCategory !== ''
-          ? `https://dummyjson.com/products/category/${byCategory}`
-          : `https://dummyjson.com/products?limit=${limit}`,
-        {
-          headers: {
-            Accept: 'application/json',
-          },
+      const { data } = await axios.get(`https://dummyjson.com/products?limit=100`, {
+        headers: {
+          Accept: 'application/json',
         },
-      );
+      });
 
       dispatch(getProductsData(data.products));
       dispatch(setErrorText(''));
@@ -48,13 +41,14 @@ function App() {
   useEffect(() => {
     getData();
     // eslint-disable-next-line
-  }, [limit]); // Component did mount
+  }, []); // Component did mount
 
   return (
     <Suspense fallback={<Spinner />}>
       <NavBar />
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/addform" element={<AddForm />} />
       </Routes>
     </Suspense>
   );
