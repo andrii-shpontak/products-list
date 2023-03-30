@@ -1,10 +1,8 @@
-import { FC, useState } from 'react';
+import { FC, useState, useCallback } from 'react';
 import { Box, Card, CardContent, Typography, CardMedia, Stack } from '@mui/material';
-import { useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import DeleteIcon from '@mui/icons-material/Delete';
-
+import { ChevronLeft, ChevronRight, Delete } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { IState, IData } from '../types';
 import { removeProductById } from '../store/productsSlice';
 
@@ -36,7 +34,9 @@ const HightLight = (props: IHightLight): any => {
     return (
       <>
         {rawString}
-        <span className="hightlight">{highlightedString}</span>
+        <span key={Math.random()} className="hightlight">
+          {highlightedString}
+        </span>
       </>
     );
   });
@@ -77,7 +77,7 @@ const CardCreator: FC<IData> = (props) => {
         <CardContent sx={{ padding: '25px 25px 0 25px' }}>
           <Stack sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Typography variant="h6">ID: {id}</Typography>
-            <DeleteIcon
+            <Delete
               onClick={() => dispatch(removeProductById(id))}
               sx={{ ':hover': { color: '#bc0000', transform: 'scale(1.2)' } }}
               fontSize="large"
@@ -110,43 +110,45 @@ const CardCreator: FC<IData> = (props) => {
           alt={title}
         />
 
-        <Stack
-          sx={{
-            padding: '0 15px',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <ChevronLeft
-            sx={{ ':hover': { transform: 'scale(1.5)' } }}
-            fontSize="large"
-            onClick={() => changImage(-1)}
-          />
-          <Stack sx={{ display: 'flex', flexDirection: 'row' }}>
-            {images.map((e, i) => {
-              return (
-                <span
-                  key={i}
-                  style={{
-                    width: '10px',
-                    height: '10px',
-                    backgroundColor: '#000',
-                    borderRadius: '100%',
-                    margin: '0 3px',
-                  }}
-                  className={i === imageNum ? 'bigDote' : ''}
-                  onClick={() => setImageNum(i)}
-                />
-              );
-            })}
+        {images.length > 1 ? (
+          <Stack
+            sx={{
+              padding: '0 15px',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <ChevronLeft
+              sx={{ ':hover': { transform: 'scale(1.5)' } }}
+              fontSize="large"
+              onClick={() => changImage(-1)}
+            />
+            <Stack sx={{ display: 'flex', flexDirection: 'row' }}>
+              {images.map((e, i) => {
+                return (
+                  <span
+                    key={i}
+                    style={{
+                      width: '10px',
+                      height: '10px',
+                      backgroundColor: '#000',
+                      borderRadius: '100%',
+                      margin: '0 3px',
+                    }}
+                    className={i === imageNum ? 'bigDote' : ''}
+                    onClick={() => setImageNum(i)}
+                  />
+                );
+              })}
+            </Stack>
+            <ChevronRight
+              sx={{ ':hover': { transform: 'scale(1.5)' } }}
+              fontSize="large"
+              onClick={() => changImage(1)}
+            />
           </Stack>
-          <ChevronRight
-            sx={{ ':hover': { transform: 'scale(1.5)' } }}
-            fontSize="large"
-            onClick={() => changImage(1)}
-          />
-        </Stack>
+        ) : null}
 
         <CardContent sx={{ padding: '25px 25px 0 25px' }}>
           <Typography variant="h6">Rating: {rating}</Typography>

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   InputAdornment,
   Stack,
@@ -9,17 +10,25 @@ import {
   Typography,
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
-import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { setMySort, setSearchType, updateSearchValue } from '../store/productsSlice';
+
+import {
+  setMyFilter,
+  setMySort,
+  setSearchType,
+  updateMyFilterText,
+  updateSearchValue,
+} from '../store/productsSlice';
 import { IState, TMySort } from '../types';
 
 const SearchPanel: React.FC = () => {
-  const searchType: string = useSelector((state: IState) => state?.searchType);
+  const searchType: 'title' | 'category' = useSelector((state: IState) => state?.searchType);
   const mySort: TMySort = useSelector((state: IState) => state?.mySort);
+  const myFilter: TMySort = useSelector((state: IState) => state?.myFilter);
 
   const [searchValue, setSearchValue] = useState<string>('');
+  const [filterValue, setFilterValue] = useState<string>('');
   const dispatch = useDispatch();
 
   const onSetSearchType = (event: SelectChangeEvent) => {
@@ -28,17 +37,28 @@ const SearchPanel: React.FC = () => {
 
   useEffect(() => {
     dispatch(updateSearchValue(searchValue));
-    dispatch(setMySort('none'));
   }, [dispatch, searchValue]);
+
+  useEffect(() => {
+    if (myFilter === 'none') {
+      setFilterValue('');
+    }
+  }, [myFilter, setFilterValue, filterValue]);
+
+  useEffect(() => {
+    dispatch(updateMyFilterText(filterValue));
+  }, [filterValue, dispatch]);
 
   return (
     <Paper
       sx={{
-        margin: '15px 0',
-        padding: '15px 0',
         display: 'flex',
         flexDirection: 'column',
       }}>
+      {/* Search input */}
+      <Typography margin={2} textAlign={'center'} variant="h4">
+        Search, sort and filter fields
+      </Typography>
       <Stack
         sx={{
           display: 'flex',
@@ -57,7 +77,11 @@ const SearchPanel: React.FC = () => {
           name="search"
           placeholder="Search..."
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+            dispatch(setMySort('none'));
+            dispatch(setMyFilter('none'));
+          }}
           startAdornment={
             <InputAdornment position="start">
               <Search sx={{ cursor: 'pointer', marginLeft: '10px' }} />
@@ -71,13 +95,18 @@ const SearchPanel: React.FC = () => {
           </Select>
         </FormControl>
       </Stack>
+      {/* End search input */}
+
+      {/* Sort and filter */}
       <Stack
         sx={{
           display: 'flex',
           flexDirection: 'row',
-          alignItems: 'center',
+          alignItems: 'top',
           margin: '15px auto 0 auto',
         }}>
+        {/* Sort */}
+
         <FormControl style={{ textAlign: 'center', margin: '10px' }}>
           <Typography variant="h6">Sotr by</Typography>
           <Select
@@ -85,7 +114,8 @@ const SearchPanel: React.FC = () => {
             value={mySort}
             onChange={(e) => {
               dispatch(setMySort(e.target.value));
-              // setMyFilter('none');
+              setSearchValue('');
+              dispatch(setMyFilter('none'));
             }}>
             <MenuItem value={'none'}>Select</MenuItem>
             <MenuItem value={'id'}>By ID</MenuItem>
@@ -98,14 +128,18 @@ const SearchPanel: React.FC = () => {
           </Select>
           <Typography variant="body1">(Ascending)</Typography>
         </FormControl>
-        {/* <FormControl style={{ textAlign: 'center', margin: '10px' }}>
-          <Typography variant="h6">Filter by</Typography>
+
+        {/* Filter */}
+
+        <FormControl style={{ textAlign: 'center', margin: '10px' }}>
+          <Typography variant="h6">Filter type</Typography>
           <Select
             name="filter"
             value={myFilter}
             onChange={(e) => {
-              setMyFilter(e.target.value);
-              setMySort('none');
+              dispatch(setMyFilter(e.target.value));
+              dispatch(setMySort('none'));
+              setSearchValue('');
             }}>
             <MenuItem value={'none'}>Select</MenuItem>
             <MenuItem value={'id'}>By ID</MenuItem>
@@ -116,7 +150,28 @@ const SearchPanel: React.FC = () => {
             <MenuItem value={'stock'}>By stock</MenuItem>
             <MenuItem value={'category'}>By category</MenuItem>
           </Select>
-        </FormControl> */}
+        </FormControl>
+
+        {/* Filter text input */}
+
+        <FormControl style={{ margin: '10px' }}>
+          <Typography variant="h6">Filter text</Typography>
+          <Input
+            sx={{
+              maxWidth: '300px',
+              height: '56px',
+              fontSize: '18px',
+              border: '1px solid rgba(0,0,0, 0.5)',
+              borderRadius: '5px',
+              paddingLeft: '15px',
+            }}
+            disabled={myFilter === 'none' ? true : false}
+            name="filter"
+            placeholder="Filter..."
+            value={filterValue}
+            onChange={(e) => setFilterValue(e.target.value)}
+          />
+        </FormControl>
       </Stack>
     </Paper>
   );

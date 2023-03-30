@@ -27,13 +27,22 @@ const NavBar = () => {
                 justifyContent: 'space-between',
                 width: '100px',
               }}>
-              <Link style={{ textDecoration: 'none', color: '#fff' }} target={'_blank'} to="#">
+              <Link
+                style={{ textDecoration: 'none', color: '#fff' }}
+                target={'_blank'}
+                to="https://www.facebook.com/">
                 <Facebook />
               </Link>
-              <Link style={{ textDecoration: 'none', color: '#fff' }} target={'_blank'} to="#">
+              <Link
+                style={{ textDecoration: 'none', color: '#fff' }}
+                target={'_blank'}
+                to="https://www.instagram.com/">
                 <Instagram />
               </Link>
-              <Link style={{ textDecoration: 'none', color: '#fff' }} target={'_blank'} to="#">
+              <Link
+                style={{ textDecoration: 'none', color: '#fff' }}
+                target={'_blank'}
+                to="https://twitter.com/">
                 <Twitter />
               </Link>
             </Stack>

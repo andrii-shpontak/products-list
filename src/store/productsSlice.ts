@@ -5,12 +5,10 @@ const initialState: IState = {
   productsData: [],
   changedData: [],
   searchBy: '',
-  isLoading: false,
-  isError: false,
-  errorText: '',
   searchType: 'title',
   mySort: 'none',
   myFilter: 'none',
+  myFilterText: '',
 };
 
 const productsSlice = createSlice({
@@ -32,15 +30,6 @@ const productsSlice = createSlice({
     addNewProduct: (state, action) => {
       state.productsData.unshift(action.payload);
     },
-    setLoading: (state, action) => {
-      state.isLoading = action.payload;
-    },
-    setError: (state, action) => {
-      state.isError = action.payload;
-    },
-    setErrorText: (state, action) => {
-      state.errorText = action.payload;
-    },
     setSearchType: (state, action) => {
       state.searchType = action.payload;
     },
@@ -50,6 +39,9 @@ const productsSlice = createSlice({
     setMyFilter: (state, action) => {
       state.myFilter = action.payload;
     },
+    updateMyFilterText: (state, action) => {
+      state.myFilterText = action.payload;
+    },
   },
 });
 
@@ -57,13 +49,11 @@ export const {
   getProductsData,
   setChangedData,
   updateSearchValue,
-  setLoading,
-  setError,
   removeProductById,
   addNewProduct,
-  setErrorText,
   setSearchType,
   setMySort,
   setMyFilter,
+  updateMyFilterText,
 } = productsSlice.actions;
 export default productsSlice.reducer;

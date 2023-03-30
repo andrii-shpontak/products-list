@@ -1,20 +1,24 @@
-import axios from 'axios';
-import { Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import axios from 'axios';
 import { useDispatch } from 'react-redux';
 
-import NavBar from './components/NavBar';
-import MainPage from './pages/MainPage';
+import { getProductsData } from './store/productsSlice';
 import Spinner from './components/Spinner';
-import { setLoading, setError, getProductsData, setErrorText } from './store/productsSlice';
-import AddForm from './pages/AddForm';
+
+const NavBar = lazy(() => import('./components/NavBar'));
+const MainPage = lazy(() => import('./pages/MainPage'));
+const AddForm = lazy(() => import('./pages/AddForm'));
 
 function App() {
   const dispatch = useDispatch();
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isError, setError] = useState<boolean>(false);
+  const [errorText, setErrorText] = useState<string>('');
 
   const getData = async () => {
-    dispatch(setLoading(true));
-    dispatch(setError(false));
+    setLoading(true);
+    setError(false);
 
     try {
       const { data } = await axios.get(`https://dummyjson.com/products?limit=100`, {
@@ -24,16 +28,16 @@ function App() {
       });
 
       dispatch(getProductsData(data.products));
-      dispatch(setErrorText(''));
-      dispatch(setLoading(false));
+      setErrorText('');
+      setLoading(false);
     } catch (error) {
-      dispatch(setError(true));
-      dispatch(setLoading(false));
+      setError(true);
+      setLoading(false);
       if (axios.isAxiosError(error)) {
-        dispatch(setErrorText(`error message: ${error.message}`));
+        setErrorText(`error message: ${error.message}`);
       } else {
         console.log('unexpected error: ', error);
-        dispatch(setErrorText('An unexpected error occurred'));
+        setErrorText('An unexpected error occurred');
       }
     }
   };
@@ -44,13 +48,18 @@ function App() {
   }, []); // Component did mount
 
   return (
-    <Suspense fallback={<Spinner />}>
+    <>
       <NavBar />
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/addform" element={<AddForm />} />
-      </Routes>
-    </Suspense>
+      <Suspense fallback={<Spinner />}>
+        <Routes>
+          <Route
+            path="/"
+            element={<MainPage isLoading={isLoading} isError={isError} errorText={errorText} />}
+          />
+          <Route path="/addform" element={<AddForm />} />
+        </Routes>
+      </Suspense>
+    </>
   );
 }
 

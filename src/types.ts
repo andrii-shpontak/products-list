@@ -28,10 +28,14 @@ export interface IState {
   productsData: IData[];
   changedData: IData[];
   searchBy: string;
+  searchType: 'title' | 'category';
+  mySort: TMySort;
+  myFilter: TMySort;
+  myFilterText: '';
+}
+
+export interface IPagesProps {
   isLoading: boolean;
   isError: boolean;
   errorText: string;
-  searchType: string;
-  mySort: TMySort;
-  myFilter: string;
 }
