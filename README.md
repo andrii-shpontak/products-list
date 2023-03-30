@@ -1,3 +1,11 @@
+This is a test project.
+
+See preview: [DEMO LINK](https://andrii-shpontak.github.io/products-list/
+)
+
+Technology stack: ( React.ts, TupeScript, Material UI,
+React-Redux, Redux-Toolkit, React-Router-Dom, Formik).
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
