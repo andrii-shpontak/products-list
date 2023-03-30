@@ -1,8 +1,6 @@
 import { FC, useState } from 'react';
-import { Box, Card, CardContent, Typography, CardActions, CardMedia, Stack } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, Card, CardContent, Typography, CardMedia, Stack } from '@mui/material';
 import { useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -10,7 +8,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IState, IData } from '../types';
 import { removeProductById } from '../store/productsSlice';
 
-const HightLight = (props: any) => {
+interface IHightLight {
+  filter: string;
+  descriptionText: string;
+}
+
+const HightLight = (props: IHightLight): any => {
   const { filter, descriptionText } = props;
 
   if (filter.length === 0) {
@@ -24,7 +27,7 @@ const HightLight = (props: any) => {
     return descriptionText;
   }
 
-  return descriptionText.split(regexp).map((rawString: unknown, index: number, arr: any) => {
+  return descriptionText.split(regexp).map((rawString: string, index: number, arr: string[]) => {
     if (index >= arr.length - 1) {
       return rawString;
     }
@@ -33,9 +36,7 @@ const HightLight = (props: any) => {
     return (
       <>
         {rawString}
-        <span key={uuidv4()} className="hightlight">
-          {highlightedString}
-        </span>
+        <span className="hightlight">{highlightedString}</span>
       </>
     );
   });
@@ -156,19 +157,6 @@ const CardCreator: FC<IData> = (props) => {
             </Typography>
           )}
         </CardContent>
-        <CardActions sx={{ padding: '25px' }}>
-          <Link
-            to={`/${id}`}
-            style={{
-              position: 'relative',
-              display: 'inline-block',
-              fontWeight: 700,
-              fontSize: '16px',
-              lineHeight: '24px',
-            }}>
-            Read more
-          </Link>
-        </CardActions>
       </Card>
     </Box>
   );

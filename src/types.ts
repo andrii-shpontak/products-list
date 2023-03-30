@@ -13,6 +13,16 @@ export interface IData {
   thumbnail?: string;
   images: string[];
 }
+export type TMySort =
+  | 'none'
+  | 'id'
+  | 'title'
+  | 'description'
+  | 'price'
+  | 'rating'
+  | 'stock'
+  | 'category'
+  | 'images';
 
 export interface IState {
   productsData: IData[];
@@ -22,6 +32,6 @@ export interface IState {
   isError: boolean;
   errorText: string;
   searchType: string;
-  mySort: string;
+  mySort: TMySort;
   myFilter: string;
 }

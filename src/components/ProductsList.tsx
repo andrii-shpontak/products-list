@@ -1,38 +1,41 @@
 import { Box, Button } from '@mui/material';
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { IData, IState } from '../types';
+import { IData, IState, TMySort } from '../types';
 import CardCreator from './CardCreator';
 import { Stack } from '@mui/system';
 import { Link } from 'react-router-dom';
 import CustomPagination from './CustomPagination';
-import { setChangedData } from '../store/productsSlice';
+import { setChangedData, updateSearchValue } from '../store/productsSlice';
 
 const ProductsList = () => {
   const dispatch = useDispatch();
   const data: IData[] = useSelector((state: IState) => state?.productsData);
   const searchType: string = useSelector((state: IState) => state?.searchType);
   const searchValue: string = useSelector((state: IState) => state?.searchBy);
-  const mySort: string = useSelector((state: IState) => state?.mySort);
+  const sortedData: IData[] = useSelector((state: IState) => state?.changedData);
+
+  const mySort: TMySort = useSelector((state: IState) => state?.mySort);
 
   const [currentPage, setCurrentPage] = useState(1);
   const offset = 5;
 
   const lastProductIndex = currentPage * offset;
   const firstProductIndex = lastProductIndex - offset;
-  const currentProducts = data.slice(firstProductIndex, lastProductIndex);
+  // const currentProducts = data.slice(firstProductIndex, lastProductIndex);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   useEffect(() => {
-    if (mySort === 'none') {
+    if (mySort === 'none' || typeof data === 'undefined') {
       dispatch(setChangedData({}));
       return;
     } else if (typeof data !== 'undefined') {
-      dispatch(setChangedData([...data].sort((a, b) => (a[mySort] < b[mySort] ? -1 : 1))));
+      dispatch(setChangedData([...data].sort((a, b) => (a[mySort]! < b[mySort]! ? -1 : 1))));
+      dispatch(updateSearchValue(''));
     }
-  }, [mySort]);
+  }, [mySort, dispatch, data]);
 
   const filteredProducts = useMemo(() => {
     return data?.filter((data) => {
@@ -41,6 +44,18 @@ const ProductsList = () => {
         : data.category.toLowerCase().includes(searchValue.toLowerCase());
     });
   }, [searchValue, data, searchType]);
+
+  const renderData: IData[] = useMemo(() => {
+    if (searchValue === '' && mySort === 'none') {
+      return data;
+    } else if (searchValue !== '' && mySort === 'none') {
+      return filteredProducts;
+    } else if (mySort !== 'none') {
+      return sortedData;
+    }
+    return data;
+  }, [searchValue, mySort, data, filteredProducts, sortedData]);
+
   return (
     <Stack>
       <Link style={{ textDecoration: 'none', margin: '0 auto' }} to="/addform">
@@ -55,20 +70,15 @@ const ProductsList = () => {
           columnGap: 2,
           marginBottom: '50px',
         }}>
-        {searchValue === ''
-          ? currentProducts.map((item) => {
-              return <CardCreator key={item.id} {...item} />;
-            })
-          : null}
-        {searchValue !== ''
-          ? filteredProducts.map((item) => {
+        {Array.isArray(renderData)
+          ? renderData.slice(firstProductIndex, lastProductIndex).map((item) => {
               return <CardCreator key={item.id} {...item} />;
             })
           : null}
         <Box></Box>
       </Box>
-      {searchValue === '' ? (
-        <CustomPagination offset={offset} totalProducts={data.length} paginate={paginate} />
+      {renderData.length > offset ? (
+        <CustomPagination offset={offset} totalProducts={renderData.length} paginate={paginate} />
       ) : null}
     </Stack>
   );

@@ -13,11 +13,11 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { setMySort, setSearchType, updateSearchValue } from '../store/productsSlice';
-import { IState } from '../types';
+import { IState, TMySort } from '../types';
 
 const SearchPanel: React.FC = () => {
   const searchType: string = useSelector((state: IState) => state?.searchType);
-  const mySort: string = useSelector((state: IState) => state?.mySort);
+  const mySort: TMySort = useSelector((state: IState) => state?.mySort);
 
   const [searchValue, setSearchValue] = useState<string>('');
   const dispatch = useDispatch();
@@ -28,6 +28,7 @@ const SearchPanel: React.FC = () => {
 
   useEffect(() => {
     dispatch(updateSearchValue(searchValue));
+    dispatch(setMySort('none'));
   }, [dispatch, searchValue]);
 
   return (
@@ -95,6 +96,7 @@ const SearchPanel: React.FC = () => {
             <MenuItem value={'stock'}>By stock</MenuItem>
             <MenuItem value={'category'}>By category</MenuItem>
           </Select>
+          <Typography variant="body1">(Ascending)</Typography>
         </FormControl>
         {/* <FormControl style={{ textAlign: 'center', margin: '10px' }}>
           <Typography variant="h6">Filter by</Typography>
