@@ -77,7 +77,7 @@ const ProductsList = () => {
 
   return (
     <Stack>
-      <Link style={{ textDecoration: 'none', margin: '0 auto' }} to="/addform">
+      <Link style={{ textDecoration: 'none', margin: '0 auto' }} to="/products-list/addform">
         <Button sx={{ height: '50px' }} startIcon={<AddCircleIcon />}>
           Add new product
         </Button>

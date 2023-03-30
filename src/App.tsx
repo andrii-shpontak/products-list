@@ -53,10 +53,10 @@ function App() {
       <Suspense fallback={<Spinner />}>
         <Routes>
           <Route
-            path="/"
+            path="/products-list/"
             element={<MainPage isLoading={isLoading} isError={isError} errorText={errorText} />}
           />
-          <Route path="/addform" element={<AddForm />} />
+          <Route path="/products-list/addform" element={<AddForm />} />
         </Routes>
       </Suspense>
     </>
