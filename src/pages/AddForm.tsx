@@ -24,7 +24,7 @@ const AddForm: React.FC<{}> = () => {
   };
 
   if (ifSend) {
-    return <Navigate to="/" />;
+    return <Navigate to="/products-list/" />;
   }
 
   return (
